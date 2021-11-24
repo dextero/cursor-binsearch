@@ -156,7 +156,7 @@ try:
 except Exception as e:
     print(e)
 finally:
-    listener.join()
+    listener.stop()
 
 if click.is_set():
     print('click')
