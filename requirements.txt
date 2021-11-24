@@ -1,2 +1,2 @@
-pynput ~= 1
+pynput ~= 1.0
 screeninfo ~= 0.6
