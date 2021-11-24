@@ -4,7 +4,7 @@ import collections
 from threading import Event
 
 import pynput
-from pynput.keyboard import Key
+from pynput.keyboard import Key, KeyCode
 from screeninfo import get_monitors
 import tkinter as tk
 
@@ -121,13 +121,13 @@ def on_press(key):
     if current_rect is None:
         return
 
-    if key == Key.left:
+    if key in (Key.left, KeyCode.from_char('a'), KeyCode.from_char('h')):
         current_rect = current_rect.left_half
-    elif key == Key.right:
+    elif key in (Key.right, KeyCode.from_char('d'), KeyCode.from_char('l')):
         current_rect = current_rect.right_half
-    elif key == Key.up:
+    elif key in (Key.up, KeyCode.from_char('w'), KeyCode.from_char('k')):
         current_rect = current_rect.top_half
-    elif key == Key.down:
+    elif key in (Key.down, KeyCode.from_char('s'), KeyCode.from_char('j')):
         current_rect = current_rect.bottom_half
     elif key == Key.enter:
         pos = current_rect.center
