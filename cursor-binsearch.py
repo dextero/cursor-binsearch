@@ -60,6 +60,7 @@ running.set()
 click = Event()
 click.clear()
 
+rect_stack = []
 current_rect = screen_rect()
 mouse = pynput.mouse.Controller()
 
@@ -112,25 +113,38 @@ class Overlay:
 
 
 def on_press(key):
+    global rect_stack
     global current_rect
 
     if key == Key.space:
-        current_rect = screen_rect()
+        if rect_stack:
+            current_rect = rect_stack[-1]
+            rect_stack.pop()
+        else:
+            current_rect = screen_rect()
         return
 
     if current_rect is None:
         return
 
-    if key in (Key.left, KeyCode.from_char('a'), KeyCode.from_char('h')):
+    prev_rect = current_rect
+    if key in (Key.left,):
         current_rect = current_rect.left_half
-    elif key in (Key.right, KeyCode.from_char('d'), KeyCode.from_char('l')):
+    elif key in (Key.right,):
         current_rect = current_rect.right_half
-    elif key in (Key.up, KeyCode.from_char('w'), KeyCode.from_char('k')):
+    elif key in (Key.up,):
         current_rect = current_rect.top_half
-    elif key in (Key.down, KeyCode.from_char('s'), KeyCode.from_char('j')):
+    elif key in (Key.down,):
         current_rect = current_rect.bottom_half
+    elif key in (KeyCode.from_char('w'), KeyCode.from_char('i')):
+        current_rect = current_rect.left_half.top_half
+    elif key in (KeyCode.from_char('e'), KeyCode.from_char('o')):
+        current_rect = current_rect.right_half.top_half
+    elif key in (KeyCode.from_char('s'), KeyCode.from_char('k')):
+        current_rect = current_rect.left_half.bottom_half
+    elif key in (KeyCode.from_char('d'), KeyCode.from_char('l')):
+        current_rect = current_rect.right_half.bottom_half
     elif key == Key.enter:
-        pos = current_rect.center
         click.set()
         running.clear()
         raise pynput.keyboard.Listener.StopException
@@ -138,6 +152,9 @@ def on_press(key):
         click.clear()
         running.clear()
         raise pynput.keyboard.Listener.StopException
+
+    if current_rect is not prev_rect:
+        rect_stack.append(prev_rect)
 
     mouse.position = current_rect.center
 
